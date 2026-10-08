@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "topicId": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "ai",
+        "bank"
+      ]
+    },
+    "lesson": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string",
+            "description": "Short slide title, max ~8 words"
+          },
+          "bullets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "3-4 concise bullet points"
+          },
+          "code": {
+            "description": "Short TypeScript/Playwright snippet, or null",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "heading",
+          "bullets",
+          "code"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "mcq"
+              },
+              "prompt": {
+                "type": "string"
+              },
+              "code": {
+                "description": "Optional snippet the question refers to",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "3-4 answer options"
+              },
+              "answer": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991,
+                "description": "Zero-based index of the correct option"
+              },
+              "explanation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "code",
+              "options",
+              "answer",
+              "explanation"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "fill"
+              },
+              "prompt": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string",
+                "description": "Code containing one ___ marker per blank"
+              },
+              "blanks": {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "description": "Accepted answers per blank; first is canonical"
+              },
+              "choices": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "explanation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "code",
+              "blanks",
+              "choices",
+              "explanation"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "match"
+              },
+              "prompt": {
+                "type": "string"
+              },
+              "pairs": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "left": {
+                      "type": "string"
+                    },
+                    "right": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "left",
+                    "right"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "3-5 pairs; each left item matches exactly one right item"
+              },
+              "explanation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "pairs",
+              "explanation"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "order"
+              },
+              "prompt": {
+                "type": "string"
+              },
+              "lines": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "3-7 code lines in correct order"
+              },
+              "distractors": {
+                "anyOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "explanation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "prompt",
+              "lines",
+              "distractors",
+              "explanation"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "topicId",
+    "source",
+    "lesson",
+    "questions"
+  ],
+  "additionalProperties": false
+}
